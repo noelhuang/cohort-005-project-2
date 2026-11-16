@@ -1,4 +1,4 @@
-/** A learner on the roster who no longer has a place on the course. */
-export function isLapsed(student: { enrollmentId: number | null }): boolean {
+/** A learner on the roster who had an Enrollment on the course and no longer has one. */
+export function isFormerLearner(student: { enrollmentId: number | null }): boolean {
   return student.enrollmentId === null;
 }

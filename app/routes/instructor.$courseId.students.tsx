@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import type { Route } from "./+types/instructor.$courseId.students";
 import { getCurrentUserId } from "~/lib/session";
 import { UserRole } from "~/db/schema";
-import { isLapsed } from "~/lib/enrollments";
+import { isFormerLearner } from "~/lib/enrollments";
 import { Card, CardContent } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { AlertTriangle, ArrowLeft, Users, Award } from "lucide-react";
@@ -18,9 +18,10 @@ import {
   quizAttempts,
   lessonProgress,
   purchases,
+  coupons,
   LessonProgressStatus,
 } from "~/db/schema";
-import { eq, and, or, sql, desc, inArray, max } from "drizzle-orm";
+import { eq, and, or, sql, desc, notExists, max } from "drizzle-orm";
 
 function getUserById(id: number) {
   return db.select().from(users).where(eq(users.id, id)).get();
@@ -43,22 +44,11 @@ function getCourseEnrolledStudents(courseId: number) {
     .all();
 }
 
-// Learners whose place was taken away keep their progress, so they still show
-// on the roster. They have no Enrollment, so their purchase date stands in.
-function getCourseLapsedStudents(courseId: number, enrolledUserIds: number[]) {
-  const lessonIds = getCourseLessonIds(courseId);
-  if (lessonIds.length === 0) return [];
-
-  const withProgress = db
-    .selectDistinct({ userId: lessonProgress.userId })
-    .from(lessonProgress)
-    .where(inArray(lessonProgress.lessonId, lessonIds))
-    .all()
-    .map((row) => row.userId)
-    .filter((userId) => !enrolledUserIds.includes(userId));
-
-  if (withProgress.length === 0) return [];
-
+// Former Learners: buyers of an Individual Purchase (a Purchase with no Seats,
+// which always granted an Enrollment) who no longer have an Enrollment. They
+// show on the roster whether or not they watched anything. With no Enrollment,
+// their latest purchase date stands in.
+function getCourseFormerLearners(courseId: number, enrolledUserIds: number[]) {
   return db
     .select({
       userId: purchases.userId,
@@ -68,11 +58,17 @@ function getCourseLapsedStudents(courseId: number, enrolledUserIds: number[]) {
     .where(
       and(
         eq(purchases.courseId, courseId),
-        inArray(purchases.userId, withProgress)
+        notExists(
+          db
+            .select({ id: coupons.id })
+            .from(coupons)
+            .where(eq(coupons.purchaseId, purchases.id))
+        )
       )
     )
     .groupBy(purchases.userId)
     .all()
+    .filter((row) => !enrolledUserIds.includes(row.userId))
     .map((row) => ({
       enrollmentId: null,
       userId: row.userId,
@@ -230,7 +226,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
     completedAt: string | null;
   }[] = getCourseEnrolledStudents(courseId);
   enrolledStudents.push(
-    ...getCourseLapsedStudents(
+    ...getCourseFormerLearners(
       courseId,
       enrolledStudents.map((s) => s.userId)
     )
@@ -296,7 +292,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
       email: studentUser?.email ?? "",
       enrolledAt: enrollment.enrolledAt,
       completedAt: enrollment.completedAt,
-      lapsed: isLapsed(enrollment),
+      formerLearner: isFormerLearner(enrollment),
       progress,
       quizScores,
     };
@@ -457,9 +453,9 @@ export default function InstructorStudentRoster({
                           {progressBar(student.progress)}
                         </td>
                         <td className="px-4 py-3">
-                          {student.lapsed ? (
+                          {student.formerLearner ? (
                             <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
-                              Lapsed
+                              Former Learner
                             </span>
                           ) : student.completedAt ? (
                             <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900/30 dark:text-green-400">
