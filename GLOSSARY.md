@@ -1,14 +1,14 @@
 # Cadence
 
-Cadence sells video courses to Learners, and Instructors teach them. This glossary covers the language around the people on Cadence, buying courses, watching them, and getting money back.
+Cadence sells video courses to Students, and Instructors teach them. This glossary covers the language around the people on Cadence, buying courses, watching them, and getting money back.
 
 ## Language
 
 ### People
 
-**Learner**:
+**Student**:
 Someone who takes courses on Cadence.
-_Avoid_: Student, User, Customer
+_Avoid_: Learner, User, Customer
 
 **Instructor**:
 Someone who builds and teaches courses on Cadence. An Instructor can only manage the courses they own.
@@ -19,7 +19,7 @@ A member of Cadence staff who runs the platform. Only a Platform Admin decides R
 _Avoid_: Admin (on its own), the team, Staff
 
 **Team Admin**:
-A learner who buys and manages a Team Licence. A Team Admin has no say over Refund Requests.
+A Student who buys and manages a Team Licence. A Team Admin has no say over Refund Requests.
 _Avoid_: Admin (on its own)
 
 ### Purchases
@@ -29,34 +29,34 @@ A single payment for a course. It is either an Individual Purchase or a Team Lic
 _Avoid_: Order, Transaction
 
 **Individual Purchase**:
-A Purchase a Learner makes for themselves. It gives the buyer an Enrollment.
+A Purchase a Student makes for themselves. It gives the buyer an Enrollment.
 
 **Team Licence**:
 A Purchase a Team Admin makes for others. It grants Seats, not the course itself; the buyer can't watch the course through it.
 _Avoid_: Team purchase, Bulk purchase
 
 **Seat**:
-One place on a Team Licence that a Learner can claim to get an Enrollment.
+One place on a Team Licence that a Student can claim to get an Enrollment.
 _Avoid_: Coupon, Code, Voucher
 
 **Unclaimed Seat**:
-A Seat no learner has claimed yet.
+A Seat no Student has claimed yet.
 
 **Claimed Seat**:
-A Seat a learner has claimed. It belongs to that learner, so a Team Licence with any Claimed Seat can't be refunded.
+A Seat a Student has claimed. It belongs to that Student, so a Team Licence with any Claimed Seat can't be refunded.
 
 ### Enrollments and watching
 
 **Enrollment**:
-A Learner's right to take a course, from an Individual Purchase or a Claimed Seat. A Learner has at most one Enrollment per course. Instructors and Platform Admins are never enrolled; their role lets them watch.
+A Student's right to take a course, from an Individual Purchase or a Claimed Seat. A Student has at most one Enrollment per course. Instructors and Platform Admins are never enrolled; their role lets them watch.
 _Avoid_: Access, Place (on its own), Subscription
 
-**Former Learner**:
-A Learner who had an Enrollment on a course and no longer has one. Being a Former Learner is always about a particular course, not Cadence as a whole.
+**Former Student**:
+A Student who had an Enrollment on a course and no longer has one. Being a Former Student is always about a particular course, not Cadence as a whole.
 _Avoid_: Lapsed, Unenrolled, Expired, Revoked, Inactive
 
 **Watched**:
-Seconds of video a Learner has actually played in a course: the furthest point reached in each lesson, added up. Not lessons opened.
+Seconds of video a Student has actually played in a course: the furthest point reached in each lesson, added up. Not lessons opened.
 _Avoid_: Viewed, Progress
 
 ### Refunds
@@ -96,8 +96,8 @@ A Refund where the money couldn't be sent. The Refund Request stays approved, be
 The time after a Purchase during which its buyer can raise a Refund Request.
 
 **Watch Limit**:
-The most of a course a Learner can have Watched and still raise a Refund Request.
+The most of a course a Student can have Watched and still raise a Refund Request.
 _Avoid_: Watch cap, Viewing threshold
 
 **Completion Limit**:
-The largest share of a course's lessons a Learner can have completed and still raise a Refund Request.
+The largest share of a course's lessons a Student can have completed and still raise a Refund Request.

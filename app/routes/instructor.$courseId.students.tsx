@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import type { Route } from "./+types/instructor.$courseId.students";
 import { getCurrentUserId } from "~/lib/session";
 import { UserRole } from "~/db/schema";
-import { isFormerLearner } from "~/lib/enrollments";
+import { isFormerStudent } from "~/lib/enrollments";
 import { Card, CardContent } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { AlertTriangle, ArrowLeft, Users, Award } from "lucide-react";
@@ -44,11 +44,11 @@ function getCourseEnrolledStudents(courseId: number) {
     .all();
 }
 
-// Former Learners: buyers of an Individual Purchase (a Purchase with no Seats,
+// Former Students: buyers of an Individual Purchase (a Purchase with no Seats,
 // which always granted an Enrollment) who no longer have an Enrollment. They
 // show on the roster whether or not they watched anything. With no Enrollment,
 // their latest purchase date stands in.
-function getCourseFormerLearners(courseId: number, enrolledUserIds: number[]) {
+function getCourseFormerStudents(courseId: number, enrolledUserIds: number[]) {
   return db
     .select({
       userId: purchases.userId,
@@ -226,7 +226,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
     completedAt: string | null;
   }[] = getCourseEnrolledStudents(courseId);
   enrolledStudents.push(
-    ...getCourseFormerLearners(
+    ...getCourseFormerStudents(
       courseId,
       enrolledStudents.map((s) => s.userId)
     )
@@ -292,7 +292,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
       email: studentUser?.email ?? "",
       enrolledAt: enrollment.enrolledAt,
       completedAt: enrollment.completedAt,
-      formerLearner: isFormerLearner(enrollment),
+      formerStudent: isFormerStudent(enrollment),
       progress,
       quizScores,
     };
@@ -453,9 +453,9 @@ export default function InstructorStudentRoster({
                           {progressBar(student.progress)}
                         </td>
                         <td className="px-4 py-3">
-                          {student.formerLearner ? (
+                          {student.formerStudent ? (
                             <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
-                              Former Learner
+                              Former Student
                             </span>
                           ) : student.completedAt ? (
                             <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900/30 dark:text-green-400">
