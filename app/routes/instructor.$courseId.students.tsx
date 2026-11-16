@@ -18,7 +18,7 @@ import {
   quizAttempts,
   lessonProgress,
   purchases,
-  coupons,
+  seats,
   LessonProgressStatus,
 } from "~/db/schema";
 import { eq, and, or, sql, desc, notExists, max } from "drizzle-orm";
@@ -60,9 +60,9 @@ function getCourseFormerStudents(courseId: number, enrolledUserIds: number[]) {
         eq(purchases.courseId, courseId),
         notExists(
           db
-            .select({ id: coupons.id })
-            .from(coupons)
-            .where(eq(coupons.purchaseId, purchases.id))
+            .select({ id: seats.id })
+            .from(seats)
+            .where(eq(seats.purchaseId, purchases.id))
         )
       )
     )
