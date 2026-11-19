@@ -72,6 +72,8 @@ async function seed() {
 
   // Drop and recreate tables for a clean seed
   sqlite.exec(`
+    DROP TABLE IF EXISTS bookmarks;
+    DROP TABLE IF EXISTS notes;
     DROP TABLE IF EXISTS comments;
     DROP TABLE IF EXISTS course_ratings;
     DROP TABLE IF EXISTS video_watch_events;
@@ -2067,6 +2069,49 @@ This course is still in draft while the cluster examples are rewritten against t
   markInProgress(students[4].id, course1LessonIds[1]);
 
   console.log(`Created ${countRows(schema.lessonProgress)} lesson progress records.`);
+
+  // ─── Bookmarks and Notes ───
+  // Emma flags Lessons she means to revisit and writes Notes on two of them;
+  // Olivia has a single Note. All on Lessons of Courses they're enrolled on.
+
+  db.insert(schema.bookmarks)
+    .values([
+      { userId: students[0].id, lessonId: course1LessonIds[4], createdAt: daysAgo(44) },
+      { userId: students[0].id, lessonId: course1LessonIds[12], createdAt: daysAgo(38) },
+      { userId: students[0].id, lessonId: course2LessonIds[6], createdAt: daysAgo(33) },
+      { userId: students[2].id, lessonId: course1LessonIds[1], createdAt: daysAgo(29) },
+    ])
+    .run();
+
+  db.insert(schema.notes)
+    .values([
+      {
+        userId: students[0].id,
+        lessonId: course1LessonIds[4],
+        body: "Rewatch the part on route params.\nTry it on my own project first.",
+        createdAt: daysAgo(44),
+        updatedAt: daysAgo(20),
+      },
+      {
+        userId: students[0].id,
+        lessonId: course2LessonIds[6],
+        body: "* not sure why the second query is needed — ask in the discussion?",
+        createdAt: daysAgo(33),
+        updatedAt: daysAgo(33),
+      },
+      {
+        userId: students[2].id,
+        lessonId: course1LessonIds[2],
+        body: "Setup took longer than the video suggests.",
+        createdAt: daysAgo(28),
+        updatedAt: daysAgo(28),
+      },
+    ])
+    .run();
+
+  console.log(
+    `Created ${countRows(schema.bookmarks)} bookmarks and ${countRows(schema.notes)} notes.`
+  );
 
   // ─── Quiz Attempts ───
 
