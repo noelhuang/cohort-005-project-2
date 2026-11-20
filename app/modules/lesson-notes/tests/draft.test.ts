@@ -38,8 +38,8 @@ describe("noteDraftStatus", () => {
     expect(noteDraftStatus("  hello\n", "hello", 10).unsaved).toBe(false);
   });
 
-  it("counts every character in the box", () => {
-    expect(noteDraftStatus("  hi  ", null, 10).length).toBe(6);
+  it("counts the characters the action would keep", () => {
+    expect(noteDraftStatus("  hi  ", null, 10).length).toBe(2);
   });
 
   it("allows exactly the limit", () => {
@@ -55,9 +55,9 @@ describe("noteDraftStatus", () => {
   });
 
   it("measures the limit after trimming, as the action does", () => {
-    expect(noteDraftStatus(` ${"a".repeat(10)} `, null, 10).tooLong).toBe(
-      false
-    );
+    const status = noteDraftStatus(` ${"a".repeat(10)} `, null, 10);
+    expect(status.tooLong).toBe(false);
+    expect(status.length).toBe(10);
   });
 
   it("marks a cleared box as unsaved but not saveable", () => {

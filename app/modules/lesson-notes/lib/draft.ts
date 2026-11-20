@@ -12,10 +12,11 @@ export function describeDraft(
   maxLength: number
 ): NoteDraftStatus {
   const trimmed = draft.trim();
-  const length = draft.length;
-  // The action trims before it checks the length, so the limit applies to
-  // the trimmed text; the counter still shows what is in the box.
-  const tooLong = trimmed.length > maxLength;
+  // The action trims before it checks the length, so the counter measures
+  // the trimmed text too: otherwise it can read "5003 / 5000" while Save
+  // stays enabled.
+  const length = trimmed.length;
+  const tooLong = length > maxLength;
   const empty = trimmed.length === 0;
   const unsaved = trimmed !== (savedBody ?? "");
 
