@@ -12,6 +12,9 @@ npm install -g agent-browser
 agent-browser install
 ```
 
+The factory workflows install it before the agent starts. Check with
+`which agent-browser` before installing it again.
+
 ## Asking your own question
 
 Start the app with `npm run dev` first. The examples below use
@@ -39,6 +42,24 @@ agent-browser get text main
 agent-browser errors
 agent-browser console
 ```
+
+## Signing in as a user
+
+The DevUI panel's switcher posts to `/api/switch-user`, which sets the session
+cookie. Do the same from the page, then reload:
+
+```bash
+# An enrolled student on a course (drop the enrollments join for one who is not)
+sqlite3 data.db "select u.id, u.name from enrollments e
+  join users u on u.id = e.user_id join courses c on c.id = e.course_id
+  where c.slug = 'building-rest-apis-with-nodejs' limit 3"
+
+agent-browser open http://localhost:5173/
+agent-browser eval "fetch('/api/switch-user', {method: 'POST', body: new URLSearchParams({userId: '5'})}).then(r => r.status)"
+agent-browser open http://localhost:5173/courses/building-rest-apis-with-nodejs/lessons/30
+```
+
+`users.role` tells a student from an instructor or an admin.
 
 The commands worth knowing: `open`, `click`, `fill`,
 `find <role|text|label|placeholder> …`, `wait`, `get text|html|attr|count|url`,

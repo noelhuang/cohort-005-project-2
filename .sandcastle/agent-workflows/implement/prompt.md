@@ -6,8 +6,6 @@ open any code. Build the ticket, and only the ticket.
 
 Read CODING_STANDARDS.md.
 
-- Behaviour goes in a deep module under app/modules/, behind an entry point a
-  test can call, never inline in a loader.
 - Ship tests with the code. End with more passing tests than you started
   with, and none failing.
 - `npm run build` must pass too.
