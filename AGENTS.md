@@ -13,6 +13,11 @@ Or run the first three with `npm run check`.
 
 Modules are deep modules: see [app/modules/README.md](./app/modules/README.md) before adding or importing one.
 
+Size limits bite at commit time. The pre-commit hook rejects a file over 5000
+tokens, so editing one means splitting it first, and it rejects a new entry in
+`.oxlintrc.json`'s size-limit exemptions, so the split code must pass the
+function limits too. Plan the split before you edit.
+
 ### About agent-browser
 
 agent-browser lets you drive a real browser through the app from the

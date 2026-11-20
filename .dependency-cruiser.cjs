@@ -71,7 +71,9 @@ module.exports = {
         "No dependency cycles. Scope to `^${R}/` if you want to allow cycles outside packages.",
       severity: "error",
       from: {},
-      to: { circular: true },
+      // Type-only edges are left out: a cycle through types alone is erased at
+      // compile time, and app/lib/notifications has one.
+      to: { circular: true, viaOnly: { dependencyTypesNot: ["type-only"] } },
     },
 
     // --- Layering (optional, off by default) ----------------------------------
@@ -95,6 +97,22 @@ module.exports = {
       to: { path: ["^app/db/", "^node_modules/(drizzle-orm|better-sqlite3)/"] },
     },
     {
+      name: "server-code-no-components",
+      comment:
+        "Server and domain code (app/lib, app/modules, app/db) may not import a component. A type both sides need lives on the server side, and the component imports it from there.",
+      severity: "error",
+      from: { path: "^app/(lib|modules|db)/" },
+      to: { path: "^app/components/" },
+    },
+    {
+      name: "only-routes-import-routes",
+      comment:
+        "A route is the top of the tree: components, lib and modules may not import one, nor its generated `+types`. Pass a component the props it needs, typed by the component itself.",
+      severity: "error",
+      from: { path: "^app/(components|lib|modules|db)/" },
+      to: { path: ["^app/routes/", "^\\.react-router/types/", "\\+types/"] },
+    },
+    {
       name: "components-no-db-connection",
       comment:
         "Components ship to the browser, so they may not open the database connection: it pulls better-sqlite3 into the client bundle and breaks hydration. Get data through a loader instead.",
@@ -107,6 +125,8 @@ module.exports = {
   ],
   options: {
     doNotFollow: { path: "node_modules" },
+    // Type-only imports count: a type import still ties the two files together.
+    tsPreCompilationDeps: true,
     tsConfig: { fileName: "tsconfig.json" },
     enhancedResolveOptions: {
       extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],

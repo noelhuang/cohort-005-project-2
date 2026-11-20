@@ -162,6 +162,14 @@ jobs:
         if: steps.batch.outputs.numbers != '[]'
         run: npm install -g @anthropic-ai/claude-code
 
+      - name: Install agent-browser
+        # The agents drive the app with it for checks and screenshots. Installed
+        # here, once, so no agent spends a turn installing it and Chrome.
+        if: steps.batch.outputs.numbers != '[]'
+        run: |
+          npm install -g agent-browser
+          agent-browser install
+
       - name: Explore
         if: steps.batch.outputs.numbers != '[]'
         env:

@@ -26,6 +26,15 @@ A loader guard does not protect an action. They are separate requests. For a
 week anybody who was signed in could approve a refund by posting to
 `/admin/refunds`.
 
+## Behaviour lives in a deep module
+
+Logic that decides something (a rule, a calculation, a state) goes in a deep
+module under `app/modules/`, behind an entry point a test can call. A loader,
+an action or a component calls the module; it does not hold the logic inline.
+Code a change moves or rewrites counts as new: a helper carried out of a route
+into `app/lib/` is the moment to give it a module and tests. See
+[app/modules/README.md](./app/modules/README.md).
+
 ## A route does not query data a module owns
 
 Once a module owns a feature's data, the route asks the module for it and
@@ -45,6 +54,14 @@ change to how the module stores its data leaves its tests alone.
 ## Keep files under 5000 tokens
 
 Keep every file under 5000 tokens.
+
+## A forced refactor is its own commit
+
+When a change needs a refactor first (most often a split, because the file it
+edits is over a size limit), the refactor lands as its own commit before the
+change: code moved, nothing edited, so `git diff --color-moved` shows it
+whole. The behaviour change follows in a commit of its own, small enough to
+read. One commit that does both hides a restyle inside a 1,400-line move.
 
 ## Wrap related writes in a transaction
 
