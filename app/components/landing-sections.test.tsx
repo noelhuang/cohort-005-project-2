@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router";
 import type { ReactNode } from "react";
 import { LandingFooter, LandingHero, LandingStats } from "./landing-sections";
 
-function render(node: ReactNode) {
+function renderMarkup(node: ReactNode) {
   return renderToStaticMarkup(<MemoryRouter>{node}</MemoryRouter>);
 }
 
@@ -15,15 +15,17 @@ function classesOf(html: string, tag: string) {
 }
 
 describe("LandingHero", () => {
-  const html = render(<LandingHero />);
+  const html = renderMarkup(<LandingHero />);
 
   it("does not centre the hero text", () => {
     expect(html).not.toContain("text-center");
   });
 
   it("does not centre the subcopy", () => {
-    const [subcopy] = classesOf(html, "p");
-    expect(subcopy).toContain("max-w-2xl");
+    const subcopy = classesOf(html, "p").find((classes) =>
+      classes.includes("max-w-2xl")
+    );
+    expect(subcopy).toBeDefined();
     expect(subcopy).not.toContain("mx-auto");
   });
 
@@ -42,14 +44,14 @@ describe("LandingHero", () => {
 });
 
 describe("LandingStats", () => {
-  const html = render(<LandingStats totalCourses={4} totalCategories={5} />);
+  const html = renderMarkup(
+    <LandingStats totalCourses={4} totalCategories={5} />
+  );
 
   it("shows the course and category counts", () => {
-    expect(html).toContain(">4</p><p");
-    expect(html).toContain(">Available Courses<");
-    expect(html).toContain(">5</p><p");
-    expect(html).toContain(">Categories<");
-    expect(html).toContain(">Self-paced<");
+    expect(html).toMatch(/>4<\/p><p[^>]*>Available Courses</);
+    expect(html).toMatch(/>5<\/p><p[^>]*>Categories</);
+    expect(html).toMatch(/>Self-paced<\/p><p[^>]*>Learn on your schedule</);
   });
 
   it("does not centre the stat text", () => {
@@ -67,7 +69,7 @@ describe("LandingStats", () => {
 
 describe("LandingFooter", () => {
   it("does not centre the footer", () => {
-    const html = render(<LandingFooter />);
+    const html = renderMarkup(<LandingFooter />);
     expect(html).toContain("Cadence");
     expect(html).not.toContain("text-center");
   });
