@@ -15,7 +15,7 @@ export function LandingHero() {
         Structured courses built by experienced instructors. Track your
         progress, take quizzes, and build real-world skills.
       </p>
-      <div className="mt-10 flex items-center justify-start gap-4">
+      <div className="mt-10 flex items-center gap-4">
         <Button asChild size="lg">
           <Link to="/courses">
             Browse Courses

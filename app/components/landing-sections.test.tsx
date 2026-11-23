@@ -31,7 +31,7 @@ describe("LandingHero", () => {
     const row = classesOf(html, "div").find((classes) =>
       classes.includes("flex")
     );
-    expect(row).toContain("justify-start");
+    expect(row).toBeDefined();
     expect(row).not.toContain("justify-center");
   });
 
